@@ -12,7 +12,6 @@ require("keys")
 -- Plugins
 require("plugins.undotree")
 require("plugins.cmp")
-require("plugins.treesitter")
 require("plugins.todo")
 require("plugins.telescope")
 require("plugins.tabby")
@@ -20,7 +19,7 @@ require("plugins.tabby")
 vim.o.showtabline = 2
 
 -- Python path
-vim.g.python3_host_prog = "C:/Users/obake/AppData/Local/Programs/Python/Python312/python.exe"
+vim.g.python3_host_prog = "%localappdata%/Programs/Python/Python312/python.exe"
 
 -- Auto change directory to home on startup
 vim.api.nvim_create_autocmd("VimEnter", {
