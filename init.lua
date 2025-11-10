@@ -13,8 +13,8 @@ require("keys")
 require("plugins.undotree")
 require("plugins.cmp")
 require("plugins.todo")
-require("plugins.telescope")
 require("plugins.tabby")
+require("plugins.fzf-lua")
 
 vim.o.showtabline = 2
 
