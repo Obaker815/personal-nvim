@@ -1,61 +1,87 @@
-vim.api.nvim_create_user_command('W', function() end, {})
+-- =======================================
+-- Keymaps & Custom Commands (Modernized)
+-- =======================================
 
--- Yank and search behavior
-vim.keymap.set("n", "Y", "y$", { noremap = true, silent = true }) -- standardize Y like y$
-vim.keymap.set("n", "<S-y>", "y$")
-vim.keymap.set("n", "n", "nzz")
-vim.keymap.set("n", "N", "Nzz")
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
+-- Safer helper
+local map = vim.keymap.set
+local cmd = vim.api.nvim_create_user_command
 
--- Buffer management
-vim.keymap.set('n', '<A-[>', ':bp<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<A-]>', ':bn<CR>', { noremap = true, silent = true })
+-- -------------------------
+-- Commands
+-- -------------------------
 
--- Tab management
-vim.keymap.set('n', '<C-Insert>', ':tabnew<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-Delete>', ':tabclose<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-End>', ':tabn<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<C-Home>', ':tabp<CR>', { noremap = true, silent = true })
+-- Safer :W command (writes all buffers)
+cmd('W', function()
+  vim.cmd('wall') -- write all
+  vim.notify('All buffers written.', vim.log.levels.INFO)
+end, {})
 
--- File explorer (from your .vimrc)
-vim.keymap.set('n', '<F2>', ':Explore<CR>', { noremap = true, silent = true })
+-- Custom terminal launcher (horizontal split)
+cmd('Term', function(opts)
+  local dir = vim.fn.expand('%:p:h')
+  local height = 12
+  vim.cmd('botright split')
+  vim.cmd('resize ' .. height)
+  vim.cmd('lcd ' .. vim.fn.fnameescape(dir))
+  vim.cmd('terminal ' .. (opts.args or ''))
+  vim.cmd('startinsert')
+end, { nargs = '*', desc = 'Open terminal in split at current file directory' })
 
--- Terminal launcher
-vim.keymap.set('n', '<F5>', ':Term<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<F1>', '', { noremap = true, silent = true })
-
--- Clipboard yank/paste
-vim.keymap.set('v', '<Leader>y', '"*y')
-vim.keymap.set('n', '<Leader>p', '"*p')
-
--- Custom terminal command that opens in a horizontal split
-vim.api.nvim_create_user_command('Term', function(opts)
-  local dir = vim.fn.expand('%:p:h')  -- current file directory
-  local term_height = 10
-  vim.cmd("botright split")            -- horizontal split on the bottom
-  vim.cmd("resize " .. term_height)    -- set the height
-  vim.cmd("lcd " .. dir)               -- set local cwd for the split
-  vim.cmd("terminal " .. (opts.args or "")) -- run terminal
-  vim.cmd("startinsert")               -- go straight into insert mode
-end, { nargs = "*" })                  -- allows passing arguments to terminal
-
--- Session handling
-vim.api.nvim_create_user_command('WriteSession', function(opts)
-  local name = opts.args ~= '' and opts.args or require('mini.sessions').get_latest()
-  if name == nil then
+-- Session handling (MiniSessions)
+cmd('WriteSession', function(opts)
+  local sessions = require('mini.sessions')
+  local name = opts.args ~= '' and opts.args or sessions.get_latest()
+  if not name or name == '' then
     name = vim.fn.input('Session name: ')
   end
-  require('mini.sessions').write(name)
-end, { nargs = '?' })
+  sessions.write(name)
+  vim.notify('Session saved: ' .. name, vim.log.levels.INFO)
+end, { nargs = '?', desc = 'Write a named session' })
 
-vim.api.nvim_create_user_command('LoadSession', function(opts)
+cmd('LoadSession', function(opts)
+  local sessions = require('mini.sessions')
   local name = opts.args
-  require('mini.sessions').read(name)
-  print('Loaded session "' .. name .. '"')
-end, { nargs = 1 })
+  sessions.read(name)
+  vim.notify('Session loaded: ' .. name, vim.log.levels.INFO)
+end, { nargs = 1, complete = 'file', desc = 'Load a session by name' })
 
--- Terminal mode window navigation
-vim.api.nvim_set_keymap('t', '<C-w>', [[<C-\><C-n><C-w>]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('t', '<C-n>', [[<C-\><C-n>]], { noremap = true, silent = true })
+-- -------------------------
+-- Normal mode behavior
+-- -------------------------
 
+-- Standardize Y like y$
+map('n', 'Y', 'y$', { noremap = true, silent = true })
+map('n', '<S-y>', 'y$')
+
+-- Keep search results centered
+map('n', 'n', 'nzz', { noremap = true, silent = true })
+map('n', 'N', 'Nzz', { noremap = true, silent = true })
+map('n', '<C-d>', '<C-d>zz', { noremap = true, silent = true })
+map('n', '<C-u>', '<C-u>zz', { noremap = true, silent = true })
+
+-- Buffer management
+map('n', '<A-[>', ':bp<CR>', { noremap = true, silent = true })
+map('n', '<A-]>', ':bn<CR>', { noremap = true, silent = true })
+
+-- Tab management
+map('n', '<C-Insert>', ':tabnew<CR>', { noremap = true, silent = true })
+map('n', '<C-Delete>', ':tabclose<CR>', { noremap = true, silent = true })
+map('n', '<C-End>', ':tabn<CR>', { noremap = true, silent = true })
+map('n', '<C-Home>', ':tabp<CR>', { noremap = true, silent = true })
+
+-- File explorer
+map('n', '<F2>', ':Explore<CR>', { noremap = true, silent = true })
+
+-- Terminal launcher
+map('n', '<F5>', ':Term<CR>', { noremap = true, silent = true })
+map('n', '<F1>', '', { noremap = true, silent = true })
+
+-- Clipboard yank/paste
+map('v', '<Leader>y', '"*y', { noremap = true, silent = true })
+map('n', '<Leader>p', '"*p', { noremap = true, silent = true })
+
+-- -------------------------
+-- Terminal mode navigation
+-- -------------------------
+map('t', '<C-w>', [[<C-\><C-n><C-w>]], { noremap = true, silent = true })
+map('t', '<C-n>', [[<C-\><C-n>]], { noremap = true, silent = true })
