@@ -1,41 +1,42 @@
-vim.opt.nu = true
-vim.opt.relativenumber = true
+-- Basic Neovim options
+local o = vim.opt
 
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
+-- Numbers
+o.number = true
+o.relativenumber = true
 
-vim.opt.smartindent = true
+-- Tabs / indentation
+o.tabstop = 4
+o.softtabstop = 4
+o.shiftwidth = 4
+o.expandtab = true
+o.autoindent = true
+o.smartindent = true
 
-vim.opt.termguicolors = true
-vim.opt.background = "dark"
-vim.g.everforest_background = "hard"
+-- Search
+o.incsearch = true
+o.hlsearch = true
+o.showmatch = true
 
-vim.cmd("colorscheme everforest")
+-- Colors
+o.termguicolors = true
+o.background = "dark"
 
-vim.g.lightline = { colorscheme = "everforest" }
+-- Disable bells / backups
+o.errorbells = false
+o.visualbell = false
+o.belloff = "all"
+o.swapfile = false
+o.backup = false
 
+-- Python
+vim.g.python3_host_prog = "%localappdata%/Programs/Python/Python312/python.exe"
+
+-- Tabline
+o.showtabline = 2
+
+-- Transparent background highlight
 vim.cmd([[
   hi Normal guibg=NONE ctermbg=NONE
   hi NonText guibg=NONE ctermbg=NONE
 ]])
-
-vim.opt.errorbells = false
-vim.opt.visualbell = false
-vim.opt.belloff = "all"
-vim.opt.swapfile = false
-vim.opt.backup = false
-
-vim.opt.number = true
-vim.opt.relativenumber = true
-
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-vim.opt.autoindent = true
-
-vim.opt.incsearch = true
-vim.opt.hlsearch = true
-vim.opt.showmatch = true
