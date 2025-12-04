@@ -5,7 +5,7 @@ return {
             local fzf = require("fzf-lua")
 
             -- Set the path to your Windows fzf executable
-            local fzf_path = vim.fn.expand("$LOCALAPPDATA") .. "\\fzf\\bin\\fzf.exe"
+            local fzf_path = vim.fn.expand("$LOCALAPPDATA") .. "\\fzf\\fzf.exe"
 
             -- Check if the executable exists
             if vim.fn.filereadable(fzf_path) == 0 then
