@@ -121,8 +121,8 @@ local function set_omnisharp_keymaps(bufnr)
         vim.lsp.buf.execute_command({ command = "omnisharp/organizeimports", arguments = { vim.api.nvim_buf_get_name(0) } })
     end, opts)
 
-    map("n", "<leader>gd", vim.lsp.buf.definition, opts)
-    map("n", "<leader>gr", vim.lsp.buf.references, opts)
+    map("n", "<leader>cd", vim.lsp.buf.definition, opts)
+    map("n", "<leader>cr", vim.lsp.buf.references, opts)
     map("n", "<leader>rn", vim.lsp.buf.rename, opts)
     map("n", "<leader>ca", vim.lsp.buf.code_action, opts)
 end
